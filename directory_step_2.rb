@@ -23,17 +23,19 @@ def print_header
 end
 
 
-def print(students)
-    students.map do |key, value|
-        key.map do |k, v|
-          v.to_s.split("").each do |letter|
-        if letter == "A"
-      puts v
-       end
-    end
-  end
+def filter(students)
+  students.map do |student|
+      if student[:name].length < 12
+          student[:name]
+      end
+        # key.map do |k, v|
+      #     if v.length < 12
+      # puts v
+       # end
+    # end
+  end.compact
 end
-end
+
 
 
 def print_footer(names)
@@ -42,5 +44,5 @@ end
 #nothing happens until we call the methods
 students = input_students
 print_header
-print(students)
-print_footer(students)
+puts name_under_12 = filter(students)
+print_footer(name_under_12)
