@@ -24,7 +24,7 @@ end
 
 def print(students)
   students.each do |student|
-    puts "#{student[:name]} (#{student[:cohort]} cohort and born in #{:May})"
+    puts "#{student[:name]} (#{student[:cohort]} cohort and born in #{:May})".center(60)
   end
 end
 
