@@ -22,19 +22,26 @@ def print_header
   puts "--------------"
 end
 
+def print_student_info_with_while_loop(student_info)
+  counter = 0
+  while counter < student_info.length  do
+    puts " #{counter + 1}. #{student_info[counter][:name]} (#{student_info[counter][:cohort]} cohort)"
+    counter += 1
+  end
+end
 
-def filter(students)
-  students.map do |student|
-      if student[:name].length < 12
-          student[:name]
-      end
+# def filter(students)
+#   students.map do |student|
+#       if student[:name].length < 12
+#           student[:name]
+#       end
         # key.map do |k, v|
       #     if v.length < 12
       # puts v
        # end
-    # end
-  end.compact
-end
+#     # end
+#   end.compact
+# end
 
 
 
@@ -44,5 +51,5 @@ end
 #nothing happens until we call the methods
 students = input_students
 print_header
-puts name_under_12 = filter(students)
-print_footer(name_under_12)
+puts(students)
+print_footer(students)
