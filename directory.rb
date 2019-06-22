@@ -7,6 +7,8 @@ def input_students
   puts "What is your name"
   name = gets
   name[-1] = ""
+  puts "What is your cohort?"
+  cohort = gets.chomp
   # while the name is not empty, repeat this code
   while !name.empty? do
     # add the student to the hash array
@@ -19,6 +21,32 @@ def input_students
   # return the array of students
   students
 end
+
+def interactive_menu
+  students = []
+  loop do
+  # 1. print the menu and ask the user what to do
+  puts "1. Input students"
+  puts "2. Show students"
+  puts "9. Exit"
+  # 2. read the input and save it into variable
+  selection = gets.chomp
+  # 3. do what the user has asked
+    case selection
+    when "1"
+      students = input the students
+    when "2"
+      print_header
+      print(students)
+      print_footer(students)
+    when "9"
+      exit
+    else
+      puts "Please try again"
+    end
+  end
+end
+
 
 def print_header
 puts "The students of Villains"
@@ -52,5 +80,6 @@ while students.empty? do
   students = input_students
 end
 print_header
+interactive_menu
 print(students)
 print_footer(students)
