@@ -5,25 +5,16 @@ def input_students
   students = []
   # get the first names
   puts "What is your name"
-  name = gets.chomp
-  puts "What is your cohort"
-  cohort = gets.chomp || :november
-
-
+  name = gets
+  name[-1] = ""
   # while the name is not empty, repeat this code
-  while !name.empty? && !cohort.empty? do
+  while !name.empty? do
     # add the student to the hash array
-    students << {name: name, cohort: cohort}
+    students << {name: name, cohort: :november}
     puts "Now we have #{students.count} students"
     # get another name from the user
-    puts "What is your name?"
-    name = gets.chomp
-    puts "What is your cohort?"
-    cohort = gets.chomp
-      # if name.empty? || cofort.empty?
-      #   puts empty = gets.chomp.to_sym
-      # end
-
+    name = gets
+    name[-1] = ""
   end
   # return the array of students
   students
