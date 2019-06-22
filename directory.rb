@@ -47,6 +47,10 @@ def print_footer(names)
 end
 
 students = input_students
+while students.empty? do
+  puts "Please enter a name"
+  students = input_students
+end
 print_header
 print(students)
 print_footer(students)
