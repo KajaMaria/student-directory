@@ -1,143 +1,131 @@
-@students = [] # an empty array accessible to all methods
+require "csv"
 
-def input_students
-  puts "Starting student input."
-  puts "Please enter the names of the students"
-  puts "To finish, just hit return twice"
-  name = STDIN.gets.chomp
-  # while the name is not empty, repeat this code
-  while !name.empty? do
-    student_input_loop(name)
-    name = STDIN.gets.chomp
+@students = []
+
+def interactive_menu
+  loop do
+    print_menu
+    process(STDIN.gets.chomp)
   end
-  puts "Names successfully stored, thank you."
-end
-
-def student_input_loop(name)
-  store_students(name)
-  puts "Now we have #{@students.count} students"
-end
-
-def print_header
-puts "The students of Villains"
-puts "-------------"
-end
-
-def print
-  @students.each do |student|
-    puts "#{student[:name]} (#{student[:cohort]} cohort)"
-  end
-end
-
-def print_footer
-  puts "Overall, we have #{@students.count} great students"
 end
 
 def print_menu
-  puts "1. Input the students"
+  puts "\n1. Input the students"
   puts "2. Show the students"
-  puts "3. Save the list to file"
-  puts "4. Load the list from file"
-  puts "5. Display this program's source code"
+  puts "3. save the list to students.csv"
+  puts "4. load the list from students.csv"
   puts "9. Exit"
 end
 
 def show_students
   print_header
-  print
+  print_student_list
   print_footer
 end
 
-def menu_choice(selection)
+def process(selection)
   case selection
-    when "1"
-      input_students
-    when "2"
-      show_students
-    when "3"
-      save_students(input_filename)
-    when "4"
-      load_students(input_filename)
-    when "5"
-      print_source
-    when "9"
-      exit # this will the program
-    else
-      puts "I don't know what you meant, try again"
+  when "1"
+    puts "--You choose Input the students--\n"
+    input_students
+  when "2"
+    puts "--You choose Show the students--\n"
+    show_students
+  when "3"
+    puts "--Save your file with a name--\n"
+    filename = STDIN.gets.chomp
+    save_students(filename)
+    puts "\n--You saved your file as #{filename}"
+  when "4"
+    puts "--Choose a filename to load--\n"
+    filename = STDIN.gets.chomp
+    load_students(filename)
+    puts "\n--#{filename} file Loaded--"
+  when "9"
+    puts "--BYE!--"
+    exit
+  else
+    puts "I don't know what you mean, try again"
   end
 end
 
-def interactive_menu
-  loop do
-    print_menu
-    menu_choice(STDIN.gets.chomp)
+def insert_students(name, cohort)
+  @students << {name: name, cohort: cohort.to_sym}
+end
+
+def input_students
+  gets_input
+  display_names
+  @students
+end
+
+def display_names
+  while !@name.empty? do
+    insert_students(@name, @cohort)
+    puts "\nNow we have #{@students.count} students"
+    gets_input
   end
 end
 
-def save_students(filename)
-  # open the file for writing
-  File.open(filename, "w") do |file|
+def gets_input
+    puts "\nPlease enter the names of the students"
+    puts "To finish, just hit return twice"
+    @name = STDIN.gets.chomp
+    puts "Give me a cohort"
+    @cohort = STDIN.gets.chomp
+end
+
+def print_header
+  puts "\nThe students of Villains Academy"
+  puts "-------------"
+end
+
+def save_students(filename = "students.csv")
+  CSV.open(filename, "wb") do |csv|
     @students.each do |student|
-      student_data = [student[:name], student[:cohort]]
-      csv_line = student_data.join(",")
-      file.puts csv_line
+      csv << [student[:name], student[:cohort]]
     end
   end
 end
 
 def load_students(filename = "students.csv")
-  File.open(filename, "r") do |file|
-    file.readlines.each do |line|
-      name, cohort = line.chomp.split(',')
-      store_students(name, cohort)
-    end
+  CSV.foreach(filename, "r") do |line|
+    name, cohort = line
+    insert_students(name, cohort)
+  end
+end
+
+def print_student_list
+  @students.each_with_index do |student, index|
+    puts "#{index + 1}. #{student[:name]} (#{student[:cohort]} cohort)"
   end
 end
 
 def try_load_students
   filename = ARGV.first
-  if filename.nil?
-    filename = input_filename
-  end
-  load_students(filename)
-  puts "Loaded #{@students.count} from students.csv"
-end
-
-def store_students(name, cohort = :november)
-  @students << {name: name, cohort: cohort.to_sym}
-end
-
-def input_filename
-  loop do
-    filename = get_input
-    if check_if_file_exists(filename)
-      return filename
-      break
-    end
-  end
-end
-
-def get_input
-  puts "Please input a file to save/load, or leave blank to default to students.csv"
-  user_input = STDIN.gets.chomp
-  if user_input.downcase == "exit"
-    exit
-  elsif user_input == "" || user_input == nil
-    user_input = "students.csv"
-  end
-  return user_input
-end
-
-def check_if_file_exists(filename)
+  return if filename.nil?
   if File.exists?(filename)
-    return true
+    load_students(filename)
+    puts "Loaded #{@students.count} from #{filename}"
   else
-    puts "Error, no such file found."
-    return false
+    puts "Sorry, #{filename} doesn't exist."
+    exit
   end
 end
 
+def plural_or_singular
+  string = "student"
+  if @students.count > 1
+    string + "s"
+  else
+    string
+  end
+end
+
+def print_footer
+  puts "\nOverall, we have #{@students.count} great #{plural_or_singular}"
+end
 
 
-try_load_students
 interactive_menu
+try_load_students
